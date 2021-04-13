@@ -11,7 +11,10 @@ Product.productsArray = [];
 let maxTrials = 25;
 let usersTrials = 0;
 let count = 0;
-
+let namesArray = [];
+let votesArray = [];
+let shownArray = [];
+let secondShownArray=[];
 
 function Product(name, filePath) {
     this.name = name;
@@ -20,6 +23,7 @@ function Product(name, filePath) {
     this.votes = 0;
 
     Product.productsArray.push(this)
+
 }
 
 new Product('bag', `img/bag.jpg`);
@@ -56,13 +60,25 @@ let rightImageIndex;
 
 //generate a random index for the three img , and multiply by product array.length : it gives random number from(0 - 20).
 
-function randonGenerateIndex() {
-    return Math.floor(Math.random() * Product.productsArray.length);
+// function randonGenerateIndex() {
+//     return Math.floor(Math.random() * Product.productsArray.length);
+// }
+
+function randonGenerateIndex(){
+    
+    let random = Math.floor(Math.random() * Product.productsArray.length);
+    while (secondShownArray.includes(random)){
+        random = Math.floor(Math.random() * Product.productsArray.length);
+        
+        
+    };
+    return random;
 }
 
 
-
 // generate a new random 3 img when the user click on any one ..
+
+
 
 
 
@@ -85,6 +101,7 @@ function renderThreeImages() {
         rightImageIndex = randonGenerateIndex();
 
     }
+   
 
 
 
@@ -99,7 +116,18 @@ function renderThreeImages() {
     middleImageElement.src = Product.productsArray[middleImageIndex].filePath;
     rightImageElement.src = Product.productsArray[rightImageIndex].filePath;
 
+
+
+    secondShownArray=[];
+    secondShownArray.push(leftImageIndex,middleImageIndex,rightImageIndex);
+     
+    console.log(secondShownArray);
+ 
 }
+
+
+
+
 
 renderThreeImages();
 
@@ -155,38 +183,96 @@ function handleUsersClick(event) {
             Product.productsArray[rightImageIndex].votes++
 
         }
+
         renderThreeImages();
+
 
     } else {
 
+        for (let j = 0; j < Product.productsArray.length; j++) {
+
+    namesArray.push(Product.productsArray[j].name)
+    votesArray.push(Product.productsArray[j].votes);
+    shownArray.push(Product.productsArray[j].shown);
+        }
+        barChart();
+    
+        
         let ButtonElement = document.getElementById('resultsButton');
-        ButtonElement.hidden=false;
-
+        ButtonElement.hidden = false;
         ButtonElement.addEventListener('click', clickToView);
-
+        
         function clickToView(e) {
-
+            
             let list = document.getElementById('resultsList');
-
+            
             for (let i = 0; i < Product.productsArray.length; i++) {
-
+                
                 let liElement = document.createElement('li');
                 list.appendChild(liElement);
-
+                
                 liElement.textContent = `${Product.productsArray[i].name} had ${Product.productsArray[i].votes} votes ,and was seen ${Product.productsArray[i].shown} times .`
-
+                
+                
+                
             }
-
+            
+            
             ButtonElement.removeEventListener('click', clickToView);
+            
+            
         }
-
-
-
+        
         divImageElement.removeEventListener('click', handleUsersClick);
-
     }
-
+    
 }
 
 
+// console.log( namesArray );
+// console.log(votesArray);
+// console.log(shownArray);
+// barChart();
 
+
+
+// chart.js
+function barChart() {
+    let chartElement = document.getElementById('chart').getContext('2d');
+
+    let myChart = new Chart(chartElement, {
+        // what type is the chart
+        type: 'bar',
+
+        //  the data for showing
+        data: {
+            //  for the names
+            labels: namesArray,
+
+            datasets: [
+                {
+                    label: 'products votes',
+                    data: votesArray,
+                    backgroundColor: [
+                        '#51c4d3',
+                    ],
+
+                    borderWidth: 1
+                },
+
+                {
+                    label: 'products shown',
+                    data: shownArray,
+                    backgroundColor: [
+                        '#126e82',
+                    ],
+
+                    borderWidth: 1
+                }
+
+            ]
+        },
+        options: {}
+    });
+
+}
