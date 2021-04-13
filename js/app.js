@@ -8,7 +8,7 @@ let rightImageElement = document.getElementById('right');
 
 Product.productsArray = [];
 
-let maxTrials = 10;
+let maxTrials = 25;
 let usersTrials = 0;
 let count = 0;
 
