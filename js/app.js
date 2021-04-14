@@ -121,10 +121,31 @@ function renderThreeImages() {
     secondShownArray=[];
     secondShownArray.push(leftImageIndex,middleImageIndex,rightImageIndex);
      
-    console.log(secondShownArray);
+    // console.log(secondShownArray);
  
 }
 
+//sending data to local storage .
+function storingData() {
+
+    let sendingData=JSON.stringify(Product.productsArray);
+    localStorage.setItem('product',sendingData);
+    console.log(sendingData);
+}
+
+function getData() {
+
+    let productData=localStorage.getItem('product');
+    let gettingData=JSON.parse(productData);
+
+
+    if (gettingData!==null) {
+        
+        Product.productsArray=gettingData;
+    }
+
+    renderThreeImages();
+}
 
 
 
@@ -183,9 +204,10 @@ function handleUsersClick(event) {
             Product.productsArray[rightImageIndex].votes++
 
         }
-
+         
         renderThreeImages();
-
+        
+        storingData();
 
     } else {
 
@@ -196,13 +218,13 @@ function handleUsersClick(event) {
     shownArray.push(Product.productsArray[j].shown);
         }
         barChart();
-    
+         
         
-        let ButtonElement = document.getElementById('resultsButton');
-        ButtonElement.hidden = false;
-        ButtonElement.addEventListener('click', clickToView);
+        // let ButtonElement = document.getElementById('resultsButton');
+        // ButtonElement.hidden = false;
+        // ButtonElement.addEventListener('click', clickToView);
         
-        function clickToView(e) {
+        // function clickToView(e) {
             
             let list = document.getElementById('resultsList');
             
@@ -218,10 +240,10 @@ function handleUsersClick(event) {
             }
             
             
-            ButtonElement.removeEventListener('click', clickToView);
+            // ButtonElement.removeEventListener('click', clickToView);
             
             
-        }
+        // }
         
         divImageElement.removeEventListener('click', handleUsersClick);
     }
@@ -276,3 +298,7 @@ function barChart() {
     });
 
 }
+
+
+
+getData();
